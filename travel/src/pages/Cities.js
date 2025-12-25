@@ -1,4 +1,3 @@
-// src/pages/Cities.js
 import { useState } from "react";
 import { cities } from "../data/cities";
 import "../styles/cities.css";
@@ -14,7 +13,6 @@ function Cities() {
 
   return (
     <div className="city-page">
-      {/* ========== SCREEN 1: CITIES LIST ONLY ========== */}
       {!selectedCity && (
         <>
           <section className="app-section-card city-intro mb-3">
@@ -51,7 +49,6 @@ function Cities() {
                   </div>
 
                   <div className="city-list-body">
-                    {/* ⬇⬇ these classNames & structure match your old CSS */}
                     <h4 className="city-list-name">{city.name}</h4>
                     <p className="city-list-short mb-0">{city.short}</p>
                   </div>
@@ -62,10 +59,8 @@ function Cities() {
         </>
       )}
 
-      {/* ========== SCREEN 2: PLACES FOR ONE CITY ========== */}
       {selectedCity && (
         <section className="app-section-card city-places-screen">
-          {/* Header with back button */}
           <div className="city-places-header mb-3">
             <button
               type="button"
@@ -93,7 +88,6 @@ function Cities() {
             </span>
           </div>
 
-          {/* Places cards */}
           <div className="city-places-grid">
             {selectedCity.places.map((place) => (
               <article key={place.id} className="city-place-card">
@@ -104,7 +98,6 @@ function Cities() {
                     className="city-place-image"
                   />
 
-                  {/* Small Google Maps icon (place.maps comes from cities.js) */}
                   {place.maps && (
                     <a
                       href={place.maps}
@@ -140,8 +133,6 @@ function Cities() {
                         {place.type}
                       </p>
                     </div>
-
-                    {/* ❤️ Heart button removed here (kept design intact) */}
                   </div>
 
                   <p className="city-place-description mb-0">

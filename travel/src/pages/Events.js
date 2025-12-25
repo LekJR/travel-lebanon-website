@@ -74,7 +74,6 @@ function Events() {
                   <span className="event-type-pill">{event.type}</span>
 
                   <div className="event-actions">
-                    {/* Favourite button */}
                     <button
                       type="button"
                       className={
@@ -103,7 +102,6 @@ function Events() {
                       </svg>
                     </button>
 
-                    {/* Book now button */}
                     <button
                       type="button"
                       className="btn btn-primary btn-sm event-book-btn"
