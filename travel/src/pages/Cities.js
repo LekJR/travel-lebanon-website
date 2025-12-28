@@ -1,15 +1,55 @@
-import { useState } from "react";
-import { cities } from "../data/cities";
+// src/pages/Cities.js
+import { useEffect, useMemo, useState } from "react";
 import "../styles/cities.css";
+
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:8080";
 
 function Cities() {
   const [selectedId, setSelectedId] = useState(null);
+  const [cities, setCities] = useState([]);
+  const [places, setPlaces] = useState([]);
 
-  const selectedCity = cities.find((city) => city.id === selectedId) || null;
+  const selectedCity = useMemo(
+    () => cities.find((c) => c.id === selectedId) || null,
+    [cities, selectedId]
+  );
 
   const handleBack = () => {
     setSelectedId(null);
+    setPlaces([]);
   };
+
+  useEffect(() => {
+    fetch(`${API_BASE}/cities`)
+      .then((res) => res.json())
+      .then((data) => {
+        // Normalize city.image (some backends return image_url)
+        const fixed = (data || []).map((c) => ({
+          ...c,
+          image: c.image || c.image_url || null,
+        }));
+        setCities(fixed);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    if (!selectedId) return;
+
+    fetch(`${API_BASE}/places/${selectedId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        // Normalize place fields + image URL
+        const fixed = (data || []).map((p) => ({
+          ...p,
+          title: p.title || p.name,
+          maps: p.maps || p.maps_link || p.maps_url,
+          image: p.image || p.image_url || null,
+        }));
+        setPlaces(fixed);
+      })
+      .catch((err) => console.log(err));
+  }, [selectedId]);
 
   return (
     <div className="city-page">
@@ -29,8 +69,7 @@ function Cities() {
           <section className="city-list-screen">
             <h2 className="city-list-heading mb-1">Choose a city</h2>
             <p className="city-list-subtext mb-3">
-              Select one of the cities below to view places, attractions and
-              more.
+              Select one of the cities below to view places, attractions and more.
             </p>
 
             <div className="city-list-grid">
@@ -41,11 +80,20 @@ function Cities() {
                   onClick={() => setSelectedId(city.id)}
                 >
                   <div className="city-list-image-wrap">
-                    <img
-                      src={city.image}
-                      alt={city.name}
-                      className="city-list-image"
-                    />
+                    {city.image ? (
+                      <img
+                        src={city.image}
+                        alt={city.name}
+                        className="city-list-image"
+                        onError={(e) => {
+                          // show fallback instead of disappearing image
+                          e.currentTarget.src = "";
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <div className="city-list-image city-image-fallback" />
+                    )}
                   </div>
 
                   <div className="city-list-body">
@@ -62,41 +110,40 @@ function Cities() {
       {selectedCity && (
         <section className="app-section-card city-places-screen">
           <div className="city-places-header mb-3">
-            <button
-              type="button"
-              className="city-back-btn"
-              onClick={handleBack}
-            >
+            <button type="button" className="city-back-btn" onClick={handleBack}>
               ← Back to cities
             </button>
 
             <div>
               <h2 className="mb-1">
                 Places in{" "}
-                <span className="city-places-city-name">
-                  {selectedCity.name}
-                </span>
+                <span className="city-places-city-name">{selectedCity.name}</span>
               </h2>
               <p className="city-places-subtitle mb-0">
-                A small list of nature and history locations you could visit in
-                this area.
+                A small list of nature and history locations you could visit in this area.
               </p>
             </div>
 
-            <span className="city-places-count">
-              {selectedCity.places.length} places
-            </span>
+            <span className="city-places-count">{places.length} places</span>
           </div>
 
           <div className="city-places-grid">
-            {selectedCity.places.map((place) => (
+            {places.map((place) => (
               <article key={place.id} className="city-place-card">
                 <div className="city-place-image-wrap">
-                  <img
-                    src={place.image}
-                    alt={place.title}
-                    className="city-place-image"
-                  />
+                  {place.image ? (
+                    <img
+                      src={place.image}
+                      alt={place.title}
+                      className="city-place-image"
+                      onError={(e) => {
+                        e.currentTarget.src = "";
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div className="city-place-image place-image-fallback" />
+                  )}
 
                   {place.maps && (
                     <a
@@ -106,38 +153,17 @@ function Cities() {
                       className="place-map-btn"
                       title="Open in Google Maps"
                     >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="white"
-                        width="16"
-                        height="16"
-                        aria-hidden="true"
-                      >
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 
-                          7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 
-                          9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 
-                          2.5-2.5 2.5 1.12 2.5 2.5S13.38 11.5 
-                          12 11.5z" />
+                      <svg viewBox="0 0 24 24" fill="white" width="16" height="16" aria-hidden="true">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
                       </svg>
                     </a>
                   )}
                 </div>
 
                 <div className="city-place-body">
-                  <div className="city-place-header">
-                    <div>
-                      <h4 className="city-place-title mb-1">
-                        {place.title}
-                      </h4>
-                      <p className="city-place-type mb-1">
-                        {place.type}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="city-place-description mb-0">
-                    {place.description}
-                  </p>
+                  <h4 className="city-place-title mb-1">{place.title}</h4>
+                  <p className="city-place-type mb-1">{place.type}</p>
+                  <p className="city-place-description mb-0">{place.description}</p>
                 </div>
               </article>
             ))}

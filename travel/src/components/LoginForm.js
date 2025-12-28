@@ -1,17 +1,17 @@
 // src/components/LoginForm.js
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import "../styles/login.css"; // create this file if it doesn't exist
+import "../styles/login.css";
 
 function LoginForm() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // prevent page reload
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const success = login(username, password);
+    const success = await login(email, password);
     if (success) {
       alert("Login successful!");
     } else {
@@ -19,8 +19,8 @@ function LoginForm() {
     }
   };
 
-  const writingUsername = (e) => {
-    setUsername(e.target.value);
+  const writingEmail = (e) => {
+    setEmail(e.target.value);
   };
 
   const writingPassword = (e) => {
@@ -33,9 +33,9 @@ function LoginForm() {
 
       <input
         type="text"
-        placeholder="Username"
-        value={username}
-        onChange={writingUsername}
+        placeholder="Email"
+        value={email}
+        onChange={writingEmail}
         className="form-control mb-2"
       />
 

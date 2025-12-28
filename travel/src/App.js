@@ -10,12 +10,12 @@ import Cities from "./pages/Cities";
 import Events from "./pages/Events";
 import More from "./pages/More";
 import About from "./pages/About";
-import Login from "./pages/Login";
+
 import Account from "./pages/Account";
 
 import { BookingProvider } from "./context/BookingContext";
 import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute.js";
+
 
 function App() {
   const [theme, setTheme] = useState(
@@ -33,27 +33,19 @@ function App() {
         <div className={`app-root ${theme}`}>
           <Navbar theme={theme} setTheme={setTheme} />
 
-          {/* 👇 put container INSIDE main so all pages get same width */}
-          <main className="app-main py-4">
-            <div className="page-container">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/cities" element={<Cities />} />
-                <Route path="/events" element={<Events />} />
-                <Route path="/more" element={<More />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/login" element={<Login />} />
-                <Route
-                  path="/account"
-                  element={
-                    <ProtectedRoute>
-                      <Account />
-                    </ProtectedRoute>
-                  }
-                />
-              </Routes>
-            </div>
-          </main>
+        <main className="app-main py-4">
+          <div className="page-container">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/cities" element={<Cities />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/more" element={<More />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/account" element={<Account />} />
+            </Routes>
+          </div>
+        </main>
+
 
           <Footer />
         </div>

@@ -407,3 +407,24 @@
 .city-place-fav-btn:hover svg path {
   fill: #fb7185;
 }
+/* Keep all city cards aligned (prevents the "Tyre dropped down" look) */
+.city-list-grid {
+  align-items: stretch;
+}
+
+/* Fallback blocks to avoid broken image icons messing layout */
+.city-image-fallback,
+.place-image-fallback {
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.06);
+  border-radius: inherit;
+}
+
+/* If your images sometimes have different ratios */
+.city-list-image,
+.city-place-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

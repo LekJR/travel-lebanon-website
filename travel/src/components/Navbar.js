@@ -1,11 +1,8 @@
 // src/components/Navbar.js
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
 function Navbar({ theme, setTheme }) {
-  const { user } = useAuth();
-
   const toggleTheme = () => {
     setTheme(theme === "light-theme" ? "dark-theme" : "light-theme");
   };
@@ -31,10 +28,7 @@ function Navbar({ theme, setTheme }) {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-
-            {/* LEFT SIDE: MAIN PAGES */}
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-
               <li className="nav-item">
                 <NavLink to="/" className={linkClass} end>
                   Home
@@ -53,7 +47,6 @@ function Navbar({ theme, setTheme }) {
                 </NavLink>
               </li>
 
-              {/* About Us moved to main group */}
               <li className="nav-item">
                 <NavLink to="/about" className={linkClass}>
                   About Us
@@ -61,19 +54,11 @@ function Navbar({ theme, setTheme }) {
               </li>
             </ul>
 
-            {/* RIGHT SIDE: LOGIN → MORE → THEME */}
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-
               <li className="nav-item">
-                {user ? (
-                  <NavLink to="/account" className={linkClass}>
-                    Account
-                  </NavLink>
-                ) : (
-                  <NavLink to="/login" className={linkClass}>
-                    Login
-                  </NavLink>
-                )}
+                <NavLink to="/account" className={linkClass}>
+                  Account
+                </NavLink>
               </li>
 
               <li className="nav-item">
@@ -83,23 +68,18 @@ function Navbar({ theme, setTheme }) {
               </li>
 
               <li className="nav-item ms-3">
-            <button
-                type="button"
-                className="btn btn-theme-toggle"
-                onClick={toggleTheme}
-              >
-                {theme === "light-theme" ? "🌙" : "☀️"}
-              </button>
-
+                <button
+                  type="button"
+                  className="btn btn-theme-toggle"
+                  onClick={toggleTheme}
+                >
+                  {theme === "light-theme" ? "🌙" : "☀️"}
+                </button>
               </li>
-
             </ul>
-
           </div>
         </div>
       </nav>
-
-      <div className="flag-bar"></div>
     </>
   );
 }

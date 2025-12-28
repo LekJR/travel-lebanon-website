@@ -1,22 +1,41 @@
-// src/context/AuthContext.js
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // stores logged-in user info
+  const [user, setUser] = useState(null);
 
-  const login = (username, password) => {
-    // Fake login – only UI, no backend
-    if (username === "testuser" && password === "password") {
-      setUser({ username });
-      return true;
+  // load user from localStorage when app starts
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
     }
-    return false;
+  }, []);
+
+  const login = async (email, password) => {
+    try {
+      const res = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) return false;
+
+      const data = await res.json();
+      setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user)); // ✅ save
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("user"); // ✅ remove
   };
 
   return (

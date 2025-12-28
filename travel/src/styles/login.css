@@ -1,21 +1,44 @@
-.login-container {
-  max-width: 400px;
-  margin: 0 auto;
+/* =========================
+   LOGIN PAGE WRAPPER
+========================= */
+.login-page {
+  min-height: calc(100vh - 120px); /* space for navbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
 }
 
+/* =========================
+   LOGIN CARD
+========================= */
 .login-form {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+  background: var(--card-bg, #fff);
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* Mobile tweak */
-@media (max-width: 576px) {
-  .login-container {
-    padding: 0 1rem;
-  }
+/* =========================
+   INPUTS & BUTTON
+========================= */
+.login-form input {
+  height: 46px;
+  border-radius: 10px;
+}
 
+.login-form button {
+  height: 46px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* =========================
+   MOBILE TWEAK
+========================= */
+@media (max-width: 576px) {
   .login-form {
     padding: 1.25rem;
   }

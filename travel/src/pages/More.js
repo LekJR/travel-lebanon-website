@@ -1,11 +1,32 @@
-import { useState } from "react";
-import { cities } from "../data/cities";
+import { useEffect, useState } from "react";
 import "../styles/more.css";
+
+const API = "http://localhost:8080";
 
 function More() {
   const [isOpen, setIsOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [cityOption, setCityOption] = useState("");
+  const [cities, setCities] = useState([]);
+
+  const loadSuggestions = () => {
+    fetch(`${API}/suggestions`)
+      .then((res) => res.json())
+      .then((data) => setSuggestions(data))
+      .catch(console.log);
+  };
+
+  const loadCities = () => {
+    fetch(`${API}/cities`)
+      .then((res) => res.json())
+      .then((data) => setCities(data))
+      .catch(console.log);
+  };
+
+  useEffect(() => {
+    loadSuggestions();
+    loadCities();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,28 +38,37 @@ function More() {
         : data.get("citySelect");
 
     const newSuggestion = {
-      id: Date.now(),
       name: data.get("name"),
       city: selectedCity,
       place: data.get("place"),
-      maps: data.get("maps"),
+      maps_link: data.get("maps"),
       description: data.get("description"),
     };
 
-    setSuggestions((prev) => [...prev, newSuggestion]);
-    e.target.reset();
-    setCityOption("");
+    fetch(`${API}/addSuggestion`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newSuggestion),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        loadSuggestions();
+        e.target.reset();
+        setCityOption("");
+      })
+      .catch(console.log);
   };
 
-  // ✨ NEW remove function
   const removeSuggestion = (id) => {
-    setSuggestions((prev) => prev.filter((s) => s.id !== id));
+    fetch(`${API}/deleteSuggestion/${id}`, { method: "DELETE" })
+      .then((res) => res.json())
+      .then(() => setSuggestions((prev) => prev.filter((s) => s.id !== id)))
+      .catch(console.log);
   };
 
   return (
     <div className="more-page">
       <section className="app-section-card">
-
         <div className="more-suggest-header mb-3">
           <div>
             <h2 className="mb-1">Suggest a place</h2>
@@ -57,7 +87,6 @@ function More() {
 
         {isOpen && (
           <>
-            {/* ---------- FORM ---------- */}
             <form className="more-form" onSubmit={handleSubmit}>
               <div className="mb-2">
                 <label className="form-label">Name</label>
@@ -115,7 +144,6 @@ function More() {
               </button>
             </form>
 
-            {/* ---------- TABLE ---------- */}
             {suggestions.length > 0 && (
               <div className="more-table-wrapper mt-4">
                 <h3 className="more-table-title">Your suggestions</h3>
@@ -130,7 +158,7 @@ function More() {
                         <th>Place</th>
                         <th>Maps</th>
                         <th>Description</th>
-                        <th>Remove</th> {/* NEW COLUMN */}
+                        <th>Remove</th>
                       </tr>
                     </thead>
 
@@ -143,12 +171,8 @@ function More() {
                           <td>{s.place}</td>
 
                           <td className="more-table-link">
-                            {s.maps ? (
-                              <a
-                                href={s.maps}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
+                            {s.maps_link ? (
+                              <a href={s.maps_link} target="_blank" rel="noopener noreferrer">
                                 Open
                               </a>
                             ) : (
@@ -158,7 +182,6 @@ function More() {
 
                           <td>{s.description || "—"}</td>
 
-                          {/* DELETE BUTTON */}
                           <td>
                             <button
                               className="btn btn-outline-danger btn-sm"
