@@ -8,12 +8,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = 8080;
+const PORT = 5000;
 const DB = { host: "localhost", user: "root", password: "", database: "tourism_app" };
 
 const pool = mysql.createPool(DB);
 
-// Serve uploads folder
 const UPLOADS_DIR = path.join(__dirname, "uploads");
 app.use("/uploads", express.static(UPLOADS_DIR));
 
@@ -30,7 +29,6 @@ async function ensureColumn(table, column, ddl) {
 }
 
 async function prepare() {
-  // existing tables
   await ensureColumn("cities", "image_path", "ALTER TABLE cities ADD COLUMN image_path VARCHAR(255) NULL");
   await ensureColumn("places", "image_path", "ALTER TABLE places ADD COLUMN image_path VARCHAR(255) NULL");
   await ensureColumn("events", "image_path", "ALTER TABLE events ADD COLUMN image_path VARCHAR(255) NULL");
@@ -57,7 +55,6 @@ async function prepare() {
     )
   `);
 
-  // new tables for Bookings & Favorites
   await pool.query(`
     CREATE TABLE IF NOT EXISTS bookings (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -81,7 +78,6 @@ async function prepare() {
   `);
 }
 
-// ---------- AUTH ----------
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) return res.status(400).json({ error: "All fields required" });
@@ -111,7 +107,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// ---------- DATA ----------
 app.get("/cities", async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT id, name, short, image_path FROM cities");
@@ -144,7 +139,6 @@ app.get("/events", async (req, res) => {
   }
 });
 
-// ---------- SERVE IMAGES ----------
 async function serveImage(table, req, res) {
   const [rows] = await pool.execute(`SELECT image_path FROM \`${table}\` WHERE id=? LIMIT 1`, [req.params.id]);
   if (!rows.length || !rows[0].image_path) return res.sendStatus(404);
@@ -159,7 +153,6 @@ app.get("/cities/:id/image", (req, res) => serveImage("cities", req, res));
 app.get("/places/:id/image", (req, res) => serveImage("places", req, res));
 app.get("/events/:id/image", (req, res) => serveImage("events", req, res));
 
-// ---------- SUGGESTIONS ----------
 app.get("/suggestions", async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -197,7 +190,6 @@ app.delete("/deleteSuggestion/:id", async (req, res) => {
   }
 });
 
-// ---------- BOOKINGS ----------
 app.get("/bookings", async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM bookings ORDER BY id DESC");
@@ -232,7 +224,6 @@ app.delete("/deleteBooking/:id", async (req, res) => {
   }
 });
 
-// ---------- FAVORITES ----------
 app.get("/favorites/:user_id", async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -269,7 +260,6 @@ app.delete("/deleteFavorite/:user_id/:event_id", async (req, res) => {
   }
 });
 
-// ---------- start ----------
 prepare()
   .then(() => {
     app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
