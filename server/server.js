@@ -11,7 +11,14 @@ app.use(express.json());
 const PORT = 5000;
 const DB = { host: "localhost", user: "root", password: "", database: "tourism_app" };
 
-const pool = mysql.createPool(DB);
+console.log('DB HOST:', process.env.MYSQLHOST);
+const pool = mysql.createPool({
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT,
+});
 
 const UPLOADS_DIR = path.join(__dirname, "uploads");
 app.use("/uploads", express.static(UPLOADS_DIR));
