@@ -7,7 +7,7 @@ const path = require("path");
 const app = express();
 app.use(cors({
   origin: ["http://localhost:3000",
-     "http://localhost:8080"],
+     "https://travellebanon.netlify.app"],
      credentials: true,
 }));
 app.use(express.json());
