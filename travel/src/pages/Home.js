@@ -29,7 +29,6 @@ const cityHighlights = [
 function Home() {
   return (
     <div className="home-page">
-      {/* MAIN HERO CARD */}
       <section className="app-section-card home-main">
         <div className="home-main-left">
           <div className="feature-pill mb-3">Travel Lebanon · Web</div>
@@ -54,7 +53,6 @@ function Home() {
           </div>
         </div>
 
-        {/* RIGHT: Clickable city cards */}
         <div className="home-main-right">
           <h2 className="home-cities-title">Pick a city to start</h2>
           <div className="home-city-grid">
@@ -84,7 +82,6 @@ function Home() {
         </div>
       </section>
 
-      {/* SECOND CARD: small feature row */}
       <section className="app-section-card home-features">
         <h2 className="home-features-title mb-3">What you can do here</h2>
         <div className="home-features-grid">

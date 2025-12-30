@@ -1,8 +1,7 @@
-// src/pages/Cities.js
 import { useEffect, useMemo, useState } from "react";
 import "../styles/cities.css";
 
-const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:8080";
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 function Cities() {
   const [selectedId, setSelectedId] = useState(null);
@@ -23,7 +22,6 @@ function Cities() {
     fetch(`${API_BASE}/cities`)
       .then((res) => res.json())
       .then((data) => {
-        // Normalize city.image (some backends return image_url)
         const fixed = (data || []).map((c) => ({
           ...c,
           image: c.image || c.image_url || null,
@@ -39,7 +37,6 @@ function Cities() {
     fetch(`${API_BASE}/places/${selectedId}`)
       .then((res) => res.json())
       .then((data) => {
-        // Normalize place fields + image URL
         const fixed = (data || []).map((p) => ({
           ...p,
           title: p.title || p.name,
@@ -86,7 +83,6 @@ function Cities() {
                         alt={city.name}
                         className="city-list-image"
                         onError={(e) => {
-                          // show fallback instead of disappearing image
                           e.currentTarget.src = "";
                           e.currentTarget.style.display = "none";
                         }}

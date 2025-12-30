@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/more.css";
 
-const API = "http://localhost:8080";
+const API = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 function More() {
   const [isOpen, setIsOpen] = useState(false);

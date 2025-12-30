@@ -1,4 +1,3 @@
-// src/pages/About.js
 import React from "react";
 
 function About() {
@@ -18,11 +17,21 @@ function About() {
         <li>Karim Aoun</li>
       </ul>
 
-      <h2 className="mt-4">What This Phase Includes</h2>
+      <h2 className="mt-4">What The First Phase Included</h2>
       <ul>
         <li>Frontend built with ReactJS and Bootstrap.</li>
         <li>Pages to view events, book them, and manage favourites.</li>
         <li>Basic login interface (no backend or database yet).</li>
+      </ul>
+      <h2 className="mt-4">What the Second Phase Includes</h2>
+      <ul>
+        <li>Backend API built with Node.js and Express.</li>
+        <li>Database integration (MySQL).</li>
+        <li>Full login and registration system.</li>
+        <li>Ability to suggest new places to visit.</li>
+        <li>Saving favourites and bookings in the database.</li>
+        <li>Deployment to production server.</li>
+        <li>Improvements to the UI and user experience.</li>
       </ul>
     </div>
   );

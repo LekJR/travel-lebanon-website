@@ -1,13 +1,12 @@
 // src/context/BookingContext.js
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
-
-// event images (same as your src/data/events.js)
 import baalbekfestival from "../assets/Events/baalbekfestival.jpg";
 import beirutmarathon from "../assets/Events/beirutmarathon.jpg";
 import tyresunset from "../assets/Events/tyresunset.jpg";
 import coastalride from "../assets/Events/coastalride.jpg";
 
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8080";
 const BookingContext = createContext();
 
 const eventImages = {
@@ -24,12 +23,10 @@ export function BookingProvider({ children }) {
   const [bookings, setBookings] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
-  // ---------- EVENTS ----------
   useEffect(() => {
-    fetch("http://localhost:8080/events")
+    fetch(`${API_BASE}/events`)
       .then((res) => res.json())
       .then((data) => {
-        // attach local image (so UI keeps using event.image)
         const fixed = data.map((e) => ({
           ...e,
           image: eventImages[e.id] || e.image,
@@ -39,12 +36,10 @@ export function BookingProvider({ children }) {
       .catch((err) => console.log(err));
   }, []);
 
-  // ---------- BOOKINGS ----------
   const loadBookings = () => {
-    fetch("http://localhost:8080/bookings")
+    fetch(`${API_BASE}/bookings`)
       .then((res) => res.json())
       .then((data) => {
-        // your DB columns likely: id, Name, Phone, Email, EventName
         const fixed = data.map((b) => ({
           id: b.id,
           eventName: b.EventName || b.eventName || b.event_name,
@@ -61,14 +56,13 @@ export function BookingProvider({ children }) {
     loadBookings();
   }, []);
 
-  // ---------- FAVORITES ----------
   const loadFavorites = () => {
     if (!user) {
       setFavorites([]);
       return;
     }
 
-    fetch("http://localhost:8080/favorites/" + user.id)
+    fetch(`${API_BASE}/favorites/` + user.id)
       .then((res) => res.json())
       .then((data) => {
         const fixed = data.map((e) => ({
@@ -82,13 +76,10 @@ export function BookingProvider({ children }) {
 
   useEffect(() => {
     loadFavorites();
-    // eslint-disable-next-line
   }, [user]);
 
-  // Add booking (used in Events.js)
-  // addBooking(name, phone, email, event_name)
   const addBooking = (name, phone, email, event_name) => {
-    fetch("http://localhost:8080/addBooking", {
+    fetch(`${API_BASE}/addBooking`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, phone, email, event_name }),
@@ -98,12 +89,11 @@ export function BookingProvider({ children }) {
       .catch((err) => console.log(err));
   };
 
-  // Remove booking by index (keeps your old style)
   const removeBooking = (index) => {
     const booking = bookings[index];
     if (!booking) return;
 
-    fetch("http://localhost:8080/deleteBooking/" + booking.id, {
+    fetch(`${API_BASE}/deleteBooking/` + booking.id, {
       method: "DELETE",
     })
       .then((res) => res.json())
@@ -120,7 +110,7 @@ export function BookingProvider({ children }) {
 
     if (exists) {
       fetch(
-        "http://localhost:8080/deleteFavorite/" + user.id + "/" + event.id,
+        `${API_BASE}/deleteFavorite/` + user.id + "/" + event.id,
         { method: "DELETE" }
       )
         .then((res) => res.json())
@@ -129,7 +119,7 @@ export function BookingProvider({ children }) {
         })
         .catch((err) => console.log(err));
     } else {
-      fetch("http://localhost:8080/addFavorite", {
+      fetch(`${API_BASE}/addFavorite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: user.id, event_id: event.id }),

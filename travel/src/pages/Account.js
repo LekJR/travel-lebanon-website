@@ -1,4 +1,3 @@
-// src/pages/Account.js
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useBookings } from "../context/BookingContext";
@@ -9,12 +8,12 @@ function Account() {
   const { user, login, logout } = useAuth();
   const { favorites, bookings, removeBooking } = useBookings();
 
-  // login/register form state
   const [mode, setMode] = useState("login"); // "login" or "register"
   const [name, setName] = useState("");      // only for register
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8080";
   const handleLogin = async (e) => {
     e.preventDefault();
     const ok = await login(email, password);
@@ -24,7 +23,7 @@ function Account() {
   const handleRegister = (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:8080/register", {
+    fetch(`${API_BASE}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
@@ -50,7 +49,6 @@ function Account() {
       });
   };
 
-  // ====== IF NOT LOGGED IN: SHOW LOGIN/REGISTER UI ======
   if (!user) {
     return (
       <div className="login-page">
@@ -65,7 +63,6 @@ function Account() {
               : "Create a new account to start saving favourites and bookings."}
           </p>
 
-          {/* Toggle buttons */}
           <div className="d-flex gap-2 mb-3">
             <button
               type="button"
@@ -90,7 +87,6 @@ function Account() {
             </button>
           </div>
 
-          {/* Name only in register */}
           {mode === "register" && (
             <div className="mb-2">
               <label className="form-label">Name</label>
@@ -134,7 +130,6 @@ function Account() {
     );
   }
 
-  // ====== IF LOGGED IN: SHOW ACCOUNT DETAILS ======
   return (
     <div className="account-page">
       <section className="app-section-card mb-3">
@@ -156,7 +151,6 @@ function Account() {
         </div>
       </section>
 
-      {/* FAVORITES */}
       <section className="app-section-card mb-3">
         <h2 className="mb-1">Favourite events</h2>
         <p className="text-muted mb-0">
@@ -188,7 +182,6 @@ function Account() {
         )}
       </section>
 
-      {/* BOOKINGS */}
       <section className="app-section-card">
         <h2 className="mb-1">Event bookings</h2>
         <p className="text-muted mb-0">Booking requests you sent from the Events page.</p>

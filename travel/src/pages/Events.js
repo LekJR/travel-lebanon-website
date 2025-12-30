@@ -1,10 +1,8 @@
-// src/pages/Events.js
 import { useState } from "react";
 import { useBookings } from "../context/BookingContext";
 import "../styles/events.css";
 
 function Events() {
-  // 🔹 SINGLE source of truth
   const { events, addBooking, favorites, toggleFavorite } = useBookings();
 
   const [showModal, setShowModal] = useState(false);
@@ -39,7 +37,6 @@ function Events() {
 
   return (
     <div className="events-page">
-      {/* HEADER */}
       <section className="app-section-card mb-3">
         <div className="section-heading mb-2">
           <h2 className="mb-1">Events</h2>
@@ -54,7 +51,6 @@ function Events() {
         </p>
       </section>
 
-      {/* EVENTS LIST */}
       <section className="app-section-card events-section">
         {events.length === 0 ? (
           <p className="text-muted">Loading events...</p>
@@ -80,7 +76,6 @@ function Events() {
                     <span className="event-type-pill">{event.type}</span>
 
                     <div className="event-actions">
-                      {/* FAVORITE BUTTON */}
                       <button
                         type="button"
                         className={
@@ -106,7 +101,6 @@ function Events() {
                         </svg>
                       </button>
 
-                      {/* BOOK BUTTON */}
                       <button
                         type="button"
                         className="btn btn-primary btn-sm event-book-btn"
@@ -123,7 +117,6 @@ function Events() {
         )}
       </section>
 
-      {/* BOOKING MODAL */}
       {showModal && (
         <div className="modal-overlay modal-open">
           <div className="modal-card modal-animate">

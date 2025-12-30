@@ -5,7 +5,11 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000",
+     "http://localhost:8080"],
+     credentials: true,
+}));
 app.use(express.json());
 
 const PORT = 8080;
