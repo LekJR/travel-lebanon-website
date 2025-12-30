@@ -6,8 +6,8 @@ import beirutmarathon from "../assets/Events/beirutmarathon.jpg";
 import tyresunset from "../assets/Events/tyresunset.jpg";
 import coastalride from "../assets/Events/coastalride.jpg";
 
-console.log("API_BASE =", API_BASE);
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8080";
+console.log("API_BASE =", API_BASE);
 const BookingContext = createContext();
 
 const eventImages = {
